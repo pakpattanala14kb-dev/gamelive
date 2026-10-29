@@ -14,7 +14,6 @@
     
     .game-area { flex: 1; display: none; justify-content: center; align-items: center; padding: 10px; }
     
-    /* لڈو بورڈ کا ڈیزائن */
     .ludo-board {
       width: 90vw; height: 90vw; max-width: 400px; max-height: 400px;
       background: white; border: 4px solid #333; position: relative;
@@ -27,7 +26,7 @@
     .home.blue { grid-area: 10 / 1 / 16 / 7; background: #3b82f6; }
     .home.yellow { grid-area: 10 / 10 / 16 / 16; background: #eab308; }
     
-    .home-inner { width: 70%; height: 70%; background: white; border-radius: 10px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; padding: 10px; }
+    .home-inner { width: 70%; height: 70%; background: white; border-radius: 10px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; padding: 10px; position: relative;}
     .home-inner div { border-radius: 50%; border: 2px solid #333; }
     .home.red .home-inner div { background: #ef4444; }
     .home.green .home-inner div { background: #22c55e; }
@@ -36,7 +35,6 @@
 
     .center { grid-area: 7 / 7 / 10 / 10; border: 2px solid #333; display: flex; justify-content: center; align-items: center; background: #fff; }
 
-    /* پاسا اور بٹن کا حصہ */
     .controls { display: none; padding: 20px; background: #16213e; flex-direction: column; align-items: center; border-top: 2px solid #7c3aed; }
     .dice-box { width: 60px; height: 60px; background: white; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 30px; font-weight: bold; color: black; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
     .roll-btn { background: #7c3aed; color: white; border: none; padding: 12px 40px; border-radius: 25px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; max-width: 300px;}
@@ -45,23 +43,24 @@
     .rolling { animation: spin 0.5s linear infinite; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
 
-    /* 🌟 نیا: گیم جوائن کرنے کا پاپ اپ (Entry Fee) */
-    .entry-modal {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 100;
-    }
-    .entry-content {
-      background: #16213e; padding: 30px 20px; border-radius: 20px; text-align: center;
-      border: 2px solid #7c3aed; width: 90%; max-width: 350px; box-shadow: 0 0 20px rgba(124,58,237,0.5);
-    }
+    /* گیم جوائن پاپ اپ */
+    .entry-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 100; }
+    .entry-content { background: #16213e; padding: 30px 20px; border-radius: 20px; text-align: center; border: 2px solid #7c3aed; width: 90%; max-width: 350px; box-shadow: 0 0 20px rgba(124,58,237,0.5); }
     .entry-content h2 { font-size: 22px; margin-bottom: 10px; color: #fbbf24; }
     .entry-content p { font-size: 14px; color: #ccc; margin-bottom: 20px; }
     .fee-box { background: #1a1a2e; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #333; }
     .fee-amount { font-size: 28px; font-weight: bold; color: #fbbf24; }
     .balance-text { font-size: 12px; color: #aaa; margin-top: 5px; }
     .join-btn { background: #22c55e; color: white; border: none; padding: 15px; border-radius: 25px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(34,197,94,0.4); }
-    .join-btn:active { transform: scale(0.95); }
     .cancel-btn { background: transparent; color: #ef4444; border: none; font-size: 14px; cursor: pointer; text-decoration: underline; }
+
+    /* جیتنے کا پاپ اپ (Winner) */
+    .win-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 200; }
+    .win-content { background: linear-gradient(135deg, #16213e, #4a1c40); padding: 40px 20px; border-radius: 20px; text-align: center; border: 3px solid #fbbf24; width: 90%; max-width: 350px; box-shadow: 0 0 30px rgba(251,191,36,0.6); }
+    .win-content h1 { font-size: 40px; margin-bottom: 10px; }
+    .win-content h2 { color: #fbbf24; margin-bottom: 20px; }
+    .win-content p { font-size: 18px; margin-bottom: 25px; color: #22c55e; font-weight: bold; }
+    .win-content button { background: #7c3aed; color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -72,26 +71,24 @@
     <div style="width: 24px;"></div>
   </div>
 
-  <!-- 🌟 گیم جوائن کرنے کی سکرین -->
+  <!-- انٹری فیس کا پاپ اپ -->
   <div class="entry-modal" id="entryModal">
     <div class="entry-content">
       <h2>🎲 Ludo میں خوش آمدید</h2>
       <p>گیم کھیلنے کے لیے انٹری فیس لازمی ہے۔<br>جیتنے پر 200 کوائنز ملیں گے!</p>
-      
       <div class="fee-box">
         <div class="fee-amount">💰 100 کوائنز</div>
         <div class="balance-text">آپ کا بیلنس: 2,500 کوائنز</div>
       </div>
-
       <button class="join-btn" onclick="joinGame()">گیم جوائن کریں</button>
       <a href="index.html" class="cancel-btn" style="text-decoration: none; display: block;">واپس جائیں (کینسل)</a>
     </div>
   </div>
 
-  <!-- گیم کا بورڈ (ابھی چھپا ہوا ہے) -->
+  <!-- گیم کا بورڈ -->
   <div class="game-area" id="gameArea">
     <div class="ludo-board">
-      <div class="home red"><div class="home-inner"><div></div><div></div><div></div><div></div></div></div>
+      <div class="home red"><div class="home-inner" id="redHome"><div></div><div></div><div></div><div></div></div></div>
       <div class="home green"><div class="home-inner"><div></div><div></div><div></div><div></div></div></div>
       <div class="home blue"><div class="home-inner"><div></div><div></div><div></div><div></div></div></div>
       <div class="home yellow"><div class="home-inner"><div></div><div></div><div></div><div></div></div></div>
@@ -99,26 +96,32 @@
     </div>
   </div>
 
-  <!-- پاسا اور بٹن (ابھی چھپا ہوا ہے) -->
+  <!-- پاسا -->
   <div class="controls" id="controlsArea">
     <div class="dice-box" id="diceValue">🎲</div>
-    <button class="roll-btn" onclick="rollDice()">پاسا پھینکیں</button>
+    <button class="roll-btn" onclick="rollDice()" id="rollBtn">پاسا پھینکیں</button>
+  </div>
+
+  <!-- جیتنے کا پاپ اپ -->
+  <div class="win-modal" id="winModal">
+    <div class="win-content">
+      <h1>🎉</h1>
+      <h2>آپ جیت گئے!</h2>
+      <p>آپ کو 200 کوائنز ملے ہیں</p>
+      <button onclick="goHome()">واپس ہوم پیج پر جائیں</button>
+    </div>
   </div>
 
   <script>
-    // گیم جوائن کرنے کا فنکشن (پاپ اپ بند کر کے گیم دکھائے گا)
     function joinGame() {
-      // پاپ اپ چھپائیں
       document.getElementById('entryModal').style.display = 'none';
-      // گیم کا بورڈ دکھائیں
       document.getElementById('gameArea').style.display = 'flex';
       document.getElementById('controlsArea').style.display = 'flex';
     }
 
-    // پاسا پھینکنے کا فنکشن
     function rollDice() {
       const diceBox = document.getElementById('diceValue');
-      const btn = document.querySelector('.roll-btn');
+      const btn = document.getElementById('rollBtn');
       
       diceBox.classList.add('rolling');
       btn.disabled = true;
@@ -131,13 +134,26 @@
         
         if(randomNumber === 6) {
           diceBox.style.color = '#22c55e';
+          // ایک گوٹی کو باہر نکالیں (اینیمیشن کے لیے)
+          let redTokens = document.querySelectorAll('#redHome div');
+          redTokens[0].style.transform = 'translate(50px, 50px)';
+          redTokens[0].style.transition = '0.5s';
+          
+          // 6 آنے پر جیتنے کا پاپ اپ دکھائیں
+          setTimeout(() => {
+            document.getElementById('winModal').style.display = 'flex';
+          }, 1000);
+          
         } else {
           diceBox.style.color = 'black';
+          btn.disabled = false;
+          btn.innerText = "دوبارہ پھینکیں";
         }
-        
-        btn.disabled = false;
-        btn.innerText = "دوبارہ پھینکیں";
       }, 800);
+    }
+
+    function goHome() {
+      window.location.href = 'index.html';
     }
   </script>
 
