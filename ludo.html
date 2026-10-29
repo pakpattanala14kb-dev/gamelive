@@ -12,7 +12,7 @@
     .header a { color: white; text-decoration: none; font-size: 24px; }
     .header h2 { font-size: 18px; }
     
-    .game-area { flex: 1; display: flex; justify-content: center; align-items: center; padding: 10px; }
+    .game-area { flex: 1; display: none; justify-content: center; align-items: center; padding: 10px; }
     
     /* لڈو بورڈ کا ڈیزائن */
     .ludo-board {
@@ -21,14 +21,12 @@
       display: grid; grid-template-columns: repeat(15, 1fr); grid-template-rows: repeat(15, 1fr);
     }
     
-    /* چاروں کونے */
     .home { border: 2px solid #333; display: flex; justify-content: center; align-items: center; }
     .home.red { grid-area: 1 / 1 / 7 / 7; background: #ef4444; }
     .home.green { grid-area: 1 / 10 / 7 / 16; background: #22c55e; }
     .home.blue { grid-area: 10 / 1 / 16 / 7; background: #3b82f6; }
     .home.yellow { grid-area: 10 / 10 / 16 / 16; background: #eab308; }
     
-    /* کونے کے اندر سفید دائرہ (گھر) */
     .home-inner { width: 70%; height: 70%; background: white; border-radius: 10px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; padding: 10px; }
     .home-inner div { border-radius: 50%; border: 2px solid #333; }
     .home.red .home-inner div { background: #ef4444; }
@@ -36,26 +34,34 @@
     .home.blue .home-inner div { background: #3b82f6; }
     .home.yellow .home-inner div { background: #eab308; }
 
-    /* درمیانی حصہ */
     .center { grid-area: 7 / 7 / 10 / 10; border: 2px solid #333; display: flex; justify-content: center; align-items: center; background: #fff; }
-    .center-triangle { width: 0; height: 0; border-left: 50px solid transparent; border-right: 50px solid transparent; border-bottom: 100px solid #ef4444; }
-
-    /* درمیانی راستے (Paths) */
-    .path { border: 1px solid #333; background: #f8fafc; }
-    .path.red-path { background: #fca5a5; }
-    .path.green-path { background: #86efac; }
-    .path.blue-path { background: #93c5fd; }
-    .path.yellow-path { background: #fde047; }
 
     /* پاسا اور بٹن کا حصہ */
-    .controls { padding: 20px; background: #16213e; display: flex; flex-direction: column; align-items: center; border-top: 2px solid #7c3aed; }
+    .controls { display: none; padding: 20px; background: #16213e; flex-direction: column; align-items: center; border-top: 2px solid #7c3aed; }
     .dice-box { width: 60px; height: 60px; background: white; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 30px; font-weight: bold; color: black; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
     .roll-btn { background: #7c3aed; color: white; border: none; padding: 12px 40px; border-radius: 25px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; max-width: 300px;}
     .roll-btn:active { transform: scale(0.95); }
 
-    /* اینیمیشن کے لیے */
     .rolling { animation: spin 0.5s linear infinite; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    /* 🌟 نیا: گیم جوائن کرنے کا پاپ اپ (Entry Fee) */
+    .entry-modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 100;
+    }
+    .entry-content {
+      background: #16213e; padding: 30px 20px; border-radius: 20px; text-align: center;
+      border: 2px solid #7c3aed; width: 90%; max-width: 350px; box-shadow: 0 0 20px rgba(124,58,237,0.5);
+    }
+    .entry-content h2 { font-size: 22px; margin-bottom: 10px; color: #fbbf24; }
+    .entry-content p { font-size: 14px; color: #ccc; margin-bottom: 20px; }
+    .fee-box { background: #1a1a2e; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #333; }
+    .fee-amount { font-size: 28px; font-weight: bold; color: #fbbf24; }
+    .balance-text { font-size: 12px; color: #aaa; margin-top: 5px; }
+    .join-btn { background: #22c55e; color: white; border: none; padding: 15px; border-radius: 25px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(34,197,94,0.4); }
+    .join-btn:active { transform: scale(0.95); }
+    .cancel-btn { background: transparent; color: #ef4444; border: none; font-size: 14px; cursor: pointer; text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -66,51 +72,65 @@
     <div style="width: 24px;"></div>
   </div>
 
-  <div class="game-area">
-    <div class="ludo-board">
-      <!-- Red Home -->
-      <div class="home red"><div class="home-inner"><div></div><div></div><div></div><div></div></div></div>
+  <!-- 🌟 گیم جوائن کرنے کی سکرین -->
+  <div class="entry-modal" id="entryModal">
+    <div class="entry-content">
+      <h2>🎲 Ludo میں خوش آمدید</h2>
+      <p>گیم کھیلنے کے لیے انٹری فیس لازمی ہے۔<br>جیتنے پر 200 کوائنز ملیں گے!</p>
       
-      <!-- Green Home -->
-      <div class="home green"><div class="home-inner"><div></div><div></div><div></div><div></div></div></div>
-      
-      <!-- Blue Home -->
-      <div class="home blue"><div class="home-inner"><div></div><div></div><div></div><div></div></div></div>
-      
-      <!-- Yellow Home -->
-      <div class="home yellow"><div class="home-inner"><div></div><div></div><div></div><div></div></div></div>
-      
-      <!-- Center Home -->
-      <div class="center"></div>
+      <div class="fee-box">
+        <div class="fee-amount">💰 100 کوائنز</div>
+        <div class="balance-text">آپ کا بیلنس: 2,500 کوائنز</div>
+      </div>
 
-      <!-- Paths can be added here for more detail, but this basic layout is enough for now -->
+      <button class="join-btn" onclick="joinGame()">گیم جوائن کریں</button>
+      <a href="index.html" class="cancel-btn" style="text-decoration: none; display: block;">واپس جائیں (کینسل)</a>
     </div>
   </div>
 
-  <div class="controls">
+  <!-- گیم کا بورڈ (ابھی چھپا ہوا ہے) -->
+  <div class="game-area" id="gameArea">
+    <div class="ludo-board">
+      <div class="home red"><div class="home-inner"><div></div><div></div><div></div><div></div></div></div>
+      <div class="home green"><div class="home-inner"><div></div><div></div><div></div><div></div></div></div>
+      <div class="home blue"><div class="home-inner"><div></div><div></div><div></div><div></div></div></div>
+      <div class="home yellow"><div class="home-inner"><div></div><div></div><div></div><div></div></div></div>
+      <div class="center"></div>
+    </div>
+  </div>
+
+  <!-- پاسا اور بٹن (ابھی چھپا ہوا ہے) -->
+  <div class="controls" id="controlsArea">
     <div class="dice-box" id="diceValue">🎲</div>
     <button class="roll-btn" onclick="rollDice()">پاسا پھینکیں</button>
   </div>
 
   <script>
+    // گیم جوائن کرنے کا فنکشن (پاپ اپ بند کر کے گیم دکھائے گا)
+    function joinGame() {
+      // پاپ اپ چھپائیں
+      document.getElementById('entryModal').style.display = 'none';
+      // گیم کا بورڈ دکھائیں
+      document.getElementById('gameArea').style.display = 'flex';
+      document.getElementById('controlsArea').style.display = 'flex';
+    }
+
+    // پاسا پھینکنے کا فنکشن
     function rollDice() {
       const diceBox = document.getElementById('diceValue');
       const btn = document.querySelector('.roll-btn');
       
-      // اینیمیشن شروع کریں
       diceBox.classList.add('rolling');
       btn.disabled = true;
       btn.innerText = "پھینک رہے ہیں...";
 
-      // 1 سیکنڈ بعد نمبر دکھائیں
       setTimeout(() => {
         const randomNumber = Math.floor(Math.random() * 6) + 1;
         diceBox.innerText = randomNumber;
         diceBox.classList.remove('rolling');
         
-        // نمبر کے حساب سے رنگ تبدیل کریں (آپشنل)
         if(randomNumber === 6) {
-          diceBox.style.color = '#22c55e'; // 6 آنے پر سبز
+          diceBox.style.color = '#22c55e';
         } else {
           diceBox.style.color = 'black';
         }
