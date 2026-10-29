@@ -1,1 +1,125 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Ludo Game - GameLive</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background: #1a1a2e; color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+    
+    .header { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background: #16213e; border-bottom: 2px solid #7c3aed; }
+    .header a { color: white; text-decoration: none; font-size: 24px; }
+    .header h2 { font-size: 18px; }
+    
+    .game-area { flex: 1; display: flex; justify-content: center; align-items: center; padding: 10px; }
+    
+    /* لڈو بورڈ کا ڈیزائن */
+    .ludo-board {
+      width: 90vw; height: 90vw; max-width: 400px; max-height: 400px;
+      background: white; border: 4px solid #333; position: relative;
+      display: grid; grid-template-columns: repeat(15, 1fr); grid-template-rows: repeat(15, 1fr);
+    }
+    
+    /* چاروں کونے */
+    .home { border: 2px solid #333; display: flex; justify-content: center; align-items: center; }
+    .home.red { grid-area: 1 / 1 / 7 / 7; background: #ef4444; }
+    .home.green { grid-area: 1 / 10 / 7 / 16; background: #22c55e; }
+    .home.blue { grid-area: 10 / 1 / 16 / 7; background: #3b82f6; }
+    .home.yellow { grid-area: 10 / 10 / 16 / 16; background: #eab308; }
+    
+    /* کونے کے اندر سفید دائرہ (گھر) */
+    .home-inner { width: 70%; height: 70%; background: white; border-radius: 10px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; padding: 10px; }
+    .home-inner div { border-radius: 50%; border: 2px solid #333; }
+    .home.red .home-inner div { background: #ef4444; }
+    .home.green .home-inner div { background: #22c55e; }
+    .home.blue .home-inner div { background: #3b82f6; }
+    .home.yellow .home-inner div { background: #eab308; }
 
+    /* درمیانی حصہ */
+    .center { grid-area: 7 / 7 / 10 / 10; border: 2px solid #333; display: flex; justify-content: center; align-items: center; background: #fff; }
+    .center-triangle { width: 0; height: 0; border-left: 50px solid transparent; border-right: 50px solid transparent; border-bottom: 100px solid #ef4444; }
+
+    /* درمیانی راستے (Paths) */
+    .path { border: 1px solid #333; background: #f8fafc; }
+    .path.red-path { background: #fca5a5; }
+    .path.green-path { background: #86efac; }
+    .path.blue-path { background: #93c5fd; }
+    .path.yellow-path { background: #fde047; }
+
+    /* پاسا اور بٹن کا حصہ */
+    .controls { padding: 20px; background: #16213e; display: flex; flex-direction: column; align-items: center; border-top: 2px solid #7c3aed; }
+    .dice-box { width: 60px; height: 60px; background: white; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 30px; font-weight: bold; color: black; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+    .roll-btn { background: #7c3aed; color: white; border: none; padding: 12px 40px; border-radius: 25px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; max-width: 300px;}
+    .roll-btn:active { transform: scale(0.95); }
+
+    /* اینیمیشن کے لیے */
+    .rolling { animation: spin 0.5s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <a href="index.html">⬅</a>
+    <h2>🎲 Ludo گیم</h2>
+    <div style="width: 24px;"></div>
+  </div>
+
+  <div class="game-area">
+    <div class="ludo-board">
+      <!-- Red Home -->
+      <div class="home red"><div class="home-inner"><div></div><div></div><div></div><div></div></div></div>
+      
+      <!-- Green Home -->
+      <div class="home green"><div class="home-inner"><div></div><div></div><div></div><div></div></div></div>
+      
+      <!-- Blue Home -->
+      <div class="home blue"><div class="home-inner"><div></div><div></div><div></div><div></div></div></div>
+      
+      <!-- Yellow Home -->
+      <div class="home yellow"><div class="home-inner"><div></div><div></div><div></div><div></div></div></div>
+      
+      <!-- Center Home -->
+      <div class="center"></div>
+
+      <!-- Paths can be added here for more detail, but this basic layout is enough for now -->
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="dice-box" id="diceValue">🎲</div>
+    <button class="roll-btn" onclick="rollDice()">پاسا پھینکیں</button>
+  </div>
+
+  <script>
+    function rollDice() {
+      const diceBox = document.getElementById('diceValue');
+      const btn = document.querySelector('.roll-btn');
+      
+      // اینیمیشن شروع کریں
+      diceBox.classList.add('rolling');
+      btn.disabled = true;
+      btn.innerText = "پھینک رہے ہیں...";
+
+      // 1 سیکنڈ بعد نمبر دکھائیں
+      setTimeout(() => {
+        const randomNumber = Math.floor(Math.random() * 6) + 1;
+        diceBox.innerText = randomNumber;
+        diceBox.classList.remove('rolling');
+        
+        // نمبر کے حساب سے رنگ تبدیل کریں (آپشنل)
+        if(randomNumber === 6) {
+          diceBox.style.color = '#22c55e'; // 6 آنے پر سبز
+        } else {
+          diceBox.style.color = 'black';
+        }
+        
+        btn.disabled = false;
+        btn.innerText = "دوبارہ پھینکیں";
+      }, 800);
+    }
+  </script>
+
+</body>
+</html>
