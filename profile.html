@@ -1,1 +1,135 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - GameLive</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background: #1a1a2e; color: white; padding-bottom: 70px; }
+    
+    .header { display: flex; align-items: center; padding: 15px 20px; background: #16213e; border-bottom: 2px solid #7c3aed; }
+    .header a { color: white; text-decoration: none; font-size: 24px; margin-right: 15px; }
+    
+    .profile-card { text-align: center; padding: 30px 20px; background: linear-gradient(135deg, #16213e, #1a1a2e); }
+    .avatar { width: 90px; height: 90px; border-radius: 50%; background: #7c3aed; margin: 0 auto 15px; display: flex; justify-content: center; align-items: center; font-size: 45px; border: 3px solid #fbbf24; }
+    .username { font-size: 22px; font-weight: bold; margin-bottom: 5px; }
+    .level { color: #fbbf24; font-size: 14px; font-weight: bold; margin-bottom: 15px; }
+    
+    .xp-bar { width: 80%; margin: 0 auto; background: #333; height: 10px; border-radius: 10px; overflow: hidden; }
+    .xp-fill { width: 80%; background: #7c3aed; height: 100%; }
+    .xp-text { font-size: 11px; color: #aaa; margin-top: 5px; }
+    
+    .wallet-section { padding: 20px; }
+    .wallet-box { background: #16213e; border-radius: 15px; padding: 20px; text-align: center; border: 1px solid #7c3aed; }
+    .coin-balance { font-size: 32px; font-weight: bold; color: #fbbf24; margin: 10px 0; }
+    .buy-btn { background: #7c3aed; color: white; border: none; padding: 12px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; transition: 0.3s; }
+    .buy-btn:hover { background: #6d28d9; }
+    
+    .stats-section { padding: 0 20px; }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .stat-box { background: #16213e; padding: 15px; border-radius: 10px; text-align: center; }
+    .stat-box h4 { color: #aaa; font-size: 12px; margin-bottom: 5px; }
+    .stat-box p { font-size: 18px; font-weight: bold; }
 
+    /* نیویگیشن بار */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #16213e; display: flex; justify-content: space-around; padding: 12px 0; border-top: 2px solid #7c3aed; }
+    .nav-item { text-align: center; font-size: 11px; color: #aaa; text-decoration: none; }
+    .nav-item.active { color: #a78bfa; }
+    .nav-item .icon { font-size: 20px; display: block; margin-bottom: 3px; }
+
+    /* پیمنٹ ماڈل (پاپ اپ) */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 100; }
+    .modal-content { background: #16213e; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; }
+    .modal-content h3 { margin-bottom: 15px; color: #fbbf24; }
+    .modal-content p { font-size: 14px; color: #ccc; margin-bottom: 20px; line-height: 1.5; }
+    .close-modal { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <a href="index.html">⬅</a>
+    <h2>میری پروفائل</h2>
+  </div>
+
+  <div class="profile-card">
+    <div class="avatar">👤</div>
+    <div class="username">Ali Khan</div>
+    <div class="level">🏆 لیول 5 - گولڈ</div>
+    <div class="xp-bar">
+      <div class="xp-fill"></div>
+    </div>
+    <div class="xp-text">اگلے لیول تک 200 XP باقی</div>
+  </div>
+
+  <div class="wallet-section">
+    <div class="wallet-box">
+      <h3>میرا والٹ</h3>
+      <div class="coin-balance">💰 2,500</div>
+      <p style="font-size: 12px; color: #aaa; margin-bottom: 15px;">کوائنز</p>
+      <button class="buy-btn" onclick="openPayment()">🛒 مزید کوائنز خریدیں</button>
+    </div>
+  </div>
+
+  <div class="stats-section">
+    <h3 style="margin-bottom: 10px; font-size: 16px;">میرے اعداد و شمار</h3>
+    <div class="stats-grid">
+      <div class="stat-box">
+        <h4>کھیلے گئے گیمز</h4>
+        <p>45</p>
+      </div>
+      <div class="stat-box">
+        <h4>جیتے گئے گیمز</h4>
+        <p>28</p>
+      </div>
+      <div class="stat-box">
+        <h4>رینک</h4>
+        <p>#234</p>
+      </div>
+      <div class="stat-box">
+        <h4>بھیجے گئے گفٹس</h4>
+        <p>120</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- نیویگیشن بار -->
+  <div class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <span class="icon">🏠</span> ہوم
+    </a>
+    <a href="#" class="nav-item">
+      <span class="icon">🎮</span> گیمز
+    </a>
+    <a href="live.html" class="nav-item">
+      <span class="icon">📺</span> لائیو
+    </a>
+    <a href="#" class="nav-item">
+      <span class="icon">💬</span> چیٹ
+    </a>
+    <a href="profile.html" class="nav-item active">
+      <span class="icon">👤</span> پروفائل
+    </a>
+  </div>
+
+  <!-- پیمنٹ کا پاپ اپ (ماڈل) -->
+  <div class="modal" id="paymentModal">
+    <div class="modal-content">
+      <h3>محفوظ پیمنٹ گیٹ وے</h3>
+      <p>آپ کو <b>Safepay / Raast</b> کے محفوظ صفحے پر بھیجا جا رہا ہے۔<br><br>آپ کا ذاتی نمبر یا بینک اکاؤنٹ کہیں ظاہر نہیں ہوگا۔ پیمنٹ مکمل ہونے پر کوائنز آپ کے والٹ میں شامل ہو جائیں گے۔</p>
+      <button class="close-modal" onclick="closePayment()">بند کریں</button>
+    </div>
+  </div>
+
+  <script>
+    function openPayment() {
+      document.getElementById('paymentModal').style.display = 'flex';
+    }
+    function closePayment() {
+      document.getElementById('paymentModal').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>
